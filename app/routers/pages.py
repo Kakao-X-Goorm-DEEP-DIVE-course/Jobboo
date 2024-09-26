@@ -230,3 +230,81 @@ async def delete_team(user_id: int, db: Session = Depends(get_db)):
     await db.commit()
 
     return RedirectResponse(url="/", status_code=303)
+
+
+# 팀 수정 페이지 라우트
+@router.get("/team/edit/{team_id}", response_class=HTMLResponse)
+async def edit_team_page(request: Request, team_id: int, db: AsyncSession = Depends(get_db)):
+    # 선택된 팀 정보 조회
+    result = await db.execute(select(Team).filter(Team.t_id == team_id))
+    team = result.scalar_one_or_none()
+
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+
+    # 선택된 팀의 정보와 함께 수정 페이지 렌더링
+    return templates.TemplateResponse("edit_team.html", {
+        "request": request,
+        "current_team": team
+    })
+
+
+# 팀 수정 처리 라우트
+@router.post("/team/edit/{team_id}")
+async def edit_team(
+    request: Request,
+    team_id: int,
+    t_name: str = Form(...),
+    t_intro: str = Form(...),
+    t_descript: str = Form(...),
+    t_git: str = Form(...),
+    t_logo: UploadFile = None,  # 파일이 없을 수 있음
+    db: AsyncSession = Depends(get_db)
+):
+    # 수정할 팀 정보 조회
+    result = await db.execute(select(Team).filter(Team.t_id == team_id))
+    team = result.scalar_one_or_none()
+
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found")
+
+    # 팀 정보 수정
+    team.t_name = t_name
+    team.t_intro = t_intro
+    team.t_descript = t_descript
+    team.t_git = t_git
+
+    # 로고 파일이 업로드된 경우에만 처리
+    if t_logo and t_logo.filename != "":
+        logo_filename = f"static/team_logo/{t_logo.filename}"
+
+        # 디렉터리가 존재하는지 확인, 없으면 생성
+        os.makedirs(os.path.dirname(logo_filename), exist_ok=True)
+
+        # 파일 저장
+        with open(logo_filename, "wb") as f:
+            f.write(await t_logo.read())
+        team.t_logo = logo_filename
+    else:
+        print("No new logo file uploaded, keeping the existing logo.")
+
+    # 데이터베이스에 변경사항 저장
+    try:
+        db.add(team)
+        
+        # 플러시: 세션에 반영된 변경 사항 적용
+        await db.flush()
+
+        # 변경 사항을 커밋하여 저장
+        await db.commit()
+
+    except Exception as e:
+        await db.rollback()  # 에러 발생 시 롤백
+        print(f"Error during team update: {e}")
+        raise HTTPException(status_code=500, detail="Error during team update")
+    
+    # 디버깅용 로그 출력
+    print(f"Team updated: {team.t_name}, {team.t_intro}, {team.t_descript}, {team.t_git}, {team.t_logo}")
+
+    # 수정 후 리다이렉트
+    return RedirectResponse(url="/", status_code=303)
