@@ -50,7 +50,7 @@ INSERT INTO user (t_id, u_name, u_nickname, u_email, u_git, u_html, u_css, u_ima
 (1, 'honggoo','AI_Researcher', 'ai@innovators.com', 'https://github.com/ai_researcher', 'resume_html/minwoo.html', '/css/ai_researcher.css', '/images/ai_researcher.jpg'),
 (1, 'kwangjin','FrontendNinja', 'kwangjin@webwizards.com', 'https://github.com/frontend_ninja', 'resume_html/kwangjin.html', '/css/frontend_ninja.css', '/images/frontend_ninja.jpg'),
 (1, 'boyeong','FrontendNinja', 'boyeong@webwizards.com', 'https://github.com/frontend_ninja', 'resume_html/nabo2000@naver.com.html', '/css/frontend_ninja.css', 'images/user_photos/nabo2000@naver.com.jpeg'),
-(1, 'hongzip','FrontendNinja', 'hongzip@webwizards.com', 'https://github.com/frontend_ninja', '/html/frontend_ninja.html', '/css/frontend_ninja.css', '/images/frontend_ninja.jpg'),
+(1, 'hongjip','redhouse', 'redhouse33@naver.com', 'https://github.com/redhouse33', 'resume_html/redhouse33@naver.com.html', 'css/resume_css/redhouse33@naver.com.css', 'images/user_photos/redhouse33@naver.com.jpeg'),
 (2, 'hyeonjin','Backend Engineer', 'overlaylowedir@gmail.com', 'https://github.com/badasskim', 'resume_html/badasskim.html', 'css/ai_researcher.css', 'images/user_photos/badasskim.png'),
 (3, 'Dig','FrontendNinja', 'bbkwangjin@webwizards.com', 'https://github.com/frontend_ninja', '/html/frontend_ninja.html', '/css/frontend_ninja.css', '/images/frontend_ninja.jpg'),
 (4, 'born','FrontendNinja', 'ddboyeong@webwizards.com', 'https://github.com/frontend_ninja', '/html/frontend_ninja.html', '/css/frontend_ninja.css', '/images/frontend_ninja.jpg'),

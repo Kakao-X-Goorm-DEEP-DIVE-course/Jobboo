@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-content">
+  <h2>팀 수정</h2>
+
+  <form id="edit-team-form" action="{{ url_for('edit_team', team_id=current_team.t_id) }}" method="post" enctype="multipart/form-data" class="edit-team-form">
+    
+    <!-- 팀 이름 수정 -->
+    <div class="form-group">
+      <label for="t_name">팀 이름</label>
+      <input type="text" id="t_name" name="t_name" value="{{ current_team.t_name }}" required class="form-control">
+    </div>
+
+    <!-- 팀 소개 수정 -->
+    <div class="form-group">
+      <label for="t_intro">팀 소개</label>
+      <textarea id="t_intro" name="t_intro" rows="3" class="form-control">{{ current_team.t_intro }}</textarea>
+    </div>
+
+    <!-- 팀 설명 수정 -->
+    <div class="form-group">
+      <label for="t_descript">팀 설명</label>
+      <textarea id="t_descript" name="t_descript" rows="5" class="form-control">{{ current_team.t_descript }}</textarea>
+    </div>
+
+    <!-- 팀 로고 수정 -->
+    <div class="form-group">
+      <label for="t_logo">팀 로고</label>
+      <input type="file" id="t_logo" name="t_logo" accept="image/*" class="form-control-file">
+      <img id="logo-preview" src="{{ url_for('static', path=current_team.t_logo) }}" alt="팀 로고 미리보기" style="max-width: 200px; max-height: 200px; margin-top: 10px;">
+    </div>
+
+    <!-- GitHub URL 수정 -->
+    <div class="form-group">
+      <label for="t_git">팀 GitHub URL</label>
+      <input type="url" id="t_git" name="t_git" value="{{ current_team.t_git }}" class="form-control">
+    </div>
+
+    <!-- 수정 버튼 -->
+    <button type="submit" class="btn btn-primary">팀 수정</button>
+  </form>
+</div>
+
+<!-- 자바스크립트 코드 -->
+<script>
+  // 폼 제출 후 성공 메시지를 띄우고 홈으로 이동
+  document.getElementById('edit-team-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 기본 폼 제출 막기
+
+    // 폼 데이터 처리
+    const formData = new FormData(this);
+    fetch(this.action, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        // 성공 메시지를 띄우고 홈으로 리다이렉트
+        alert("팀 수정이 완료되었습니다.");
+        window.location.href = '/';  // 홈 화면으로 리다이렉트
+      } else {
+        alert("팀 수정 중 오류가 발생했습니다.");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("팀 수정 중 오류가 발생했습니다.");
+    });
+  });
+
+  // 로고 파일이 선택될 때 미리보기를 업데이트하는 함수
+  document.getElementById('t_logo').addEventListener('change', function () {
+    const file = this.files[0];
+    const preview = document.getElementById('logo-preview');
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    } else {
+      preview.style.display = 'none';
+    }
+  });
+</script>
+
+<!-- 스타일 -->
+<style>
+  .edit-team-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .edit-team-form .form-group {
+    margin-bottom: 20px;
+  }
+
+  .edit-team-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+  }
+
+  .edit-team-form input[type="text"],
+  .edit-team-form input[type="url"],
+  .edit-team-form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+  }
+
+  .edit-team-form input[type="file"] {
+    padding: 5px;
+    font-size: 1rem;
+  }
+
+  .edit-team-form .btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .edit-team-form .btn:hover {
+    background-color: #0056b3;
+  }
+
+  #logo-preview {
+    display: block;
+    margin-top: 10px;
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+  }
+
+  .main-content {
+    padding: 40px;
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock %}
